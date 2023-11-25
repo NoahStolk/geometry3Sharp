@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.IO;
 using System.IO.Compression;
+using System.Numerics;
 using System.Text;
 
 namespace g3
@@ -206,6 +207,12 @@ namespace g3
                 foreach (Vector3d v in valuesvd)
                     result[k++] = v;
 
+            } else if (t == typeof(Vector3)) {
+                result = new Vector3d[N];
+                IEnumerable<Vector3> valuesvd = values as IEnumerable<Vector3>;
+                foreach (Vector3 v in valuesvd)
+                    result[k++] = new(v.X, v.Y, v.Z);
+
             } else
                 throw new NotSupportedException("ToVector3d: unknown type " + t.ToString());
 
@@ -283,6 +290,17 @@ namespace g3
                 IEnumerable<int> valuesi = values as IEnumerable<int>;
                 foreach (int i in valuesi) {
                     result[k][j++] = i;
+                    if (j == 3) {
+                        j = 0; k++;
+                    }
+                }
+            }
+            else if (t == typeof(uint)) {
+                N /= 3;
+                result = new Index3i[N];
+                IEnumerable<uint> valuesi = values as IEnumerable<uint>;
+                foreach (uint i in valuesi) {
+                    result[k][j++] = (int)i;
                     if (j == 3) {
                         j = 0; k++;
                     }
